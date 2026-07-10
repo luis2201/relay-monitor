@@ -1,0 +1,12 @@
+node_modules/
+npm-debug.log*
+
+backend/node_modules/
+backend/data/*.sqlite
+backend/data/*.sqlite-*
+
+/.env
+*.log
+!backend/logs/postfix.log
+
+.DS_Store
