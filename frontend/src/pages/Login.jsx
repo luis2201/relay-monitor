@@ -1,0 +1,80 @@
+import { useState } from 'react'
+import { Lock, LogIn, Server } from 'lucide-react'
+import { useAuth } from '../contexts/useAuth'
+
+function Login() {
+  const { login } = useAuth()
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
+
+  async function handleSubmit(event) {
+    event.preventDefault()
+    setLoading(true)
+    setError('')
+
+    try {
+      await login(username.trim(), password)
+    } catch (requestError) {
+      console.error(requestError)
+      setError('Usuario o contrasena incorrectos.')
+    } finally {
+      setLoading(false)
+    }
+  }
+
+  return (
+    <main className="login-page">
+      <section className="login-panel">
+        <div className="login-brand">
+          <div className="login-icon" aria-hidden="true">
+            <Server size={26} />
+          </div>
+          <div>
+            <h1>Relay Monitor</h1>
+            <p>Acceso al monitoreo del relay SMTP Postfix</p>
+          </div>
+        </div>
+
+        <form className="login-form" onSubmit={handleSubmit}>
+          <label>
+            Usuario
+            <input
+              type="text"
+              autoComplete="username"
+              value={username}
+              onChange={(event) => setUsername(event.target.value)}
+              required
+            />
+          </label>
+
+          <label>
+            Contrasena
+            <input
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              required
+            />
+          </label>
+
+          {error ? (
+            <div className="login-error" role="alert">
+              <Lock size={16} aria-hidden="true" />
+              {error}
+            </div>
+          ) : null}
+
+          <button type="submit" disabled={loading}>
+            <LogIn size={18} aria-hidden="true" />
+            {loading ? 'Ingresando' : 'Ingresar'}
+          </button>
+        </form>
+      </section>
+    </main>
+  )
+}
+
+export default Login

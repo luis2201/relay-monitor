@@ -6,6 +6,8 @@ const http = require('http');
 const { Server } = require('socket.io');
 const { initDb } = require('./db');
 const { LogWatcher } = require('./logWatcher');
+const authService = require('./authService');
+const { verifyToken } = require('./authMiddleware');
 const eventRepository = require('./eventRepository');
 const statsService = require('./statsService');
 
@@ -33,7 +35,33 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.get('/api/events/recent', async (req, res, next) => {
+app.post('/api/auth/login', async (req, res, next) => {
+  try {
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+      res.status(400).json({ error: 'missing_credentials' });
+      return;
+    }
+
+    const session = await authService.login(username, password);
+
+    if (!session) {
+      res.status(401).json({ error: 'invalid_credentials' });
+      return;
+    }
+
+    res.json(session);
+  } catch (error) {
+    next(error);
+  }
+});
+
+app.get('/api/auth/me', verifyToken, (req, res) => {
+  res.json({ user: req.user });
+});
+
+app.get('/api/events/recent', verifyToken, async (req, res, next) => {
   try {
     const events = await eventRepository.getRecentEvents(100);
     res.json(events);
@@ -42,7 +70,7 @@ app.get('/api/events/recent', async (req, res, next) => {
   }
 });
 
-app.get('/api/stats/today', async (req, res, next) => {
+app.get('/api/stats/today', verifyToken, async (req, res, next) => {
   try {
     const stats = await statsService.getTodayStats();
     res.json(stats);
@@ -73,6 +101,7 @@ app.use((error, req, res, next) => {
 
 async function start() {
   await initDb();
+  await authService.ensureAdminUser();
 
   const logWatcher = new LogWatcher();
 

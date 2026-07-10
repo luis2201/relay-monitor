@@ -30,6 +30,19 @@ function all(sql, params = []) {
   });
 }
 
+function get(sql, params = []) {
+  return new Promise((resolve, reject) => {
+    db.get(sql, params, (error, row) => {
+      if (error) {
+        reject(error);
+        return;
+      }
+
+      resolve(row);
+    });
+  });
+}
+
 async function initDb() {
   db = new sqlite3.Database(DB_PATH);
 
@@ -52,6 +65,18 @@ async function initDb() {
   await run('CREATE INDEX IF NOT EXISTS idx_smtp_events_status ON smtp_events(status)');
   await run('CREATE INDEX IF NOT EXISTS idx_smtp_events_occurred_at ON smtp_events(occurred_at)');
 
+  await run(`
+    CREATE TABLE IF NOT EXISTS users (
+      id INTEGER PRIMARY KEY AUTOINCREMENT,
+      username TEXT NOT NULL UNIQUE,
+      password_hash TEXT NOT NULL,
+      role TEXT NOT NULL DEFAULT 'admin',
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    )
+  `);
+
+  await run('CREATE INDEX IF NOT EXISTS idx_users_username ON users(username)');
+
   return db;
 }
 
@@ -60,7 +85,7 @@ function getDb() {
     throw new Error('Database has not been initialized');
   }
 
-  return { run, all };
+  return { run, all, get };
 }
 
 module.exports = {
