@@ -13,6 +13,7 @@ const app = express();
 const server = http.createServer(app);
 
 const PORT = process.env.PORT || 4100;
+const HOST = process.env.HOST || '127.0.0.1';
 const LOG_SOURCE = process.env.LOG_SOURCE || 'file';
 
 app.use(cors());
@@ -86,8 +87,8 @@ async function start() {
 
   await logWatcher.start();
 
-  server.listen(PORT, '0.0.0.0', () => {
-    console.log(`Relay Monitor backend corriendo en puerto ${PORT}`);
+server.listen(PORT, HOST, () => {
+  console.log('Relay Monitor backend corriendo en ' + HOST + ':' + PORT);
     console.log(`LOG_SOURCE=${LOG_SOURCE}`);
   });
 }
