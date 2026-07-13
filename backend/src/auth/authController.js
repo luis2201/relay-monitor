@@ -57,8 +57,47 @@ async function logout(req, res, next) {
   }
 }
 
+async function changePassword(req, res, next) {
+  try {
+    const { currentPassword, newPassword } = req.body;
+
+    if (!currentPassword || !newPassword) {
+      res.status(400).json({ message: 'Contraseña actual y nueva contraseña son requeridas' });
+      return;
+    }
+
+    if (String(newPassword).length < 8) {
+      res.status(400).json({ message: 'La nueva contraseña debe tener al menos 8 caracteres' });
+      return;
+    }
+
+    const result = await authService.changePassword({
+      user: req.user,
+      currentPassword,
+      newPassword,
+      ipAddress: getIpAddress(req),
+      userAgent: req.headers['user-agent']
+    });
+
+    if (result.status === 'user_disabled') {
+      res.status(403).json({ message: 'Usuario inactivo' });
+      return;
+    }
+
+    if (result.status === 'invalid_current_password') {
+      res.status(401).json({ message: 'Contraseña actual incorrecta' });
+      return;
+    }
+
+    res.json({ message: 'Contraseña actualizada' });
+  } catch (error) {
+    next(error);
+  }
+}
+
 module.exports = {
   login,
   me,
-  logout
+  logout,
+  changePassword
 };

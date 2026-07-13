@@ -14,3 +14,11 @@ export async function logout() {
   const response = await api.post('/api/auth/logout')
   return response.data
 }
+
+export async function changePassword(currentPassword, newPassword) {
+  const response = await api.post('/api/auth/change-password', {
+    currentPassword,
+    newPassword,
+  })
+  return response.data
+}

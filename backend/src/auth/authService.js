@@ -144,6 +144,46 @@ async function logout({ user, tokenJti, ipAddress, userAgent }) {
   });
 }
 
+async function changePassword({ user, currentPassword, newPassword, ipAddress, userAgent }) {
+  const fullUser = await userRepository.findUserByUsername(user.username);
+
+  if (!fullUser || !fullUser.active) {
+    return { status: 'user_disabled' };
+  }
+
+  const passwordMatches = await bcrypt.compare(currentPassword, fullUser.password_hash);
+
+  if (!passwordMatches) {
+    await userRepository.createAuditLog({
+      username: user.username,
+      userId: user.id,
+      action: 'PASSWORD_CHANGE_FAILED',
+      success: false,
+      ipAddress,
+      userAgent,
+      message: 'Contrasena actual incorrecta'
+    });
+    return { status: 'invalid_current_password' };
+  }
+
+  const passwordHash = await bcrypt.hash(newPassword, 12);
+  await userRepository.updateUserPassword({
+    id: user.id,
+    passwordHash
+  });
+  await userRepository.createAuditLog({
+    username: user.username,
+    userId: user.id,
+    action: 'PASSWORD_CHANGE',
+    success: true,
+    ipAddress,
+    userAgent,
+    message: 'Contrasena actualizada'
+  });
+
+  return { status: 'ok' };
+}
+
 function verifyJwtToken(token) {
   return jwt.verify(token, getJwtSecret());
 }
@@ -152,5 +192,6 @@ module.exports = {
   ensureAdminUser,
   login,
   logout,
+  changePassword,
   verifyJwtToken
 };

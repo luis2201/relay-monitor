@@ -4,6 +4,7 @@ import { getHealth, getRecentEvents, getStatsToday } from '../api/relayMonitorAp
 import Header from '../components/Header'
 import StatCard from '../components/StatCard'
 import EventsTable from '../components/EventsTable'
+import ChangePasswordModal from '../components/ChangePasswordModal'
 import { useAuth } from '../context/useAuth'
 
 const EMPTY_STATS = {
@@ -21,6 +22,7 @@ function Dashboard() {
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState('')
   const [lastUpdated, setLastUpdated] = useState(null)
+  const [showPasswordModal, setShowPasswordModal] = useState(false)
 
   const loadDashboard = useCallback(async () => {
     setLoading(true)
@@ -88,6 +90,7 @@ function Dashboard() {
         loading={loading}
         onRefresh={loadDashboard}
         onLogout={logout}
+        onChangePassword={() => setShowPasswordModal(true)}
         user={user}
       />
 
@@ -113,6 +116,10 @@ function Dashboard() {
           {lastUpdated ? ` · Ultima lectura: ${formatTime(lastUpdated)}` : ''}
         </span>
       </footer>
+
+      {showPasswordModal ? (
+        <ChangePasswordModal onClose={() => setShowPasswordModal(false)} />
+      ) : null}
     </main>
   )
 }

@@ -1,5 +1,10 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import { getMe, login as loginRequest, logout as logoutRequest } from '../api/authApi'
+import {
+  changePassword as changePasswordRequest,
+  getMe,
+  login as loginRequest,
+  logout as logoutRequest,
+} from '../api/authApi'
 import { setAuthToken, setUnauthorizedHandler } from '../api/relayMonitorApi'
 import { AuthContext } from './authContext'
 
@@ -66,6 +71,10 @@ export function AuthProvider({ children }) {
     return response.user
   }, [])
 
+  const changePassword = useCallback(async (currentPassword, newPassword) => {
+    return changePasswordRequest(currentPassword, newPassword)
+  }, [])
+
   const value = useMemo(() => ({
     token,
     user,
@@ -73,7 +82,8 @@ export function AuthProvider({ children }) {
     checkingSession,
     login,
     logout,
-  }), [checkingSession, login, logout, token, user])
+    changePassword,
+  }), [changePassword, checkingSession, login, logout, token, user])
 
   return (
     <AuthContext.Provider value={value}>

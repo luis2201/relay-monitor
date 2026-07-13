@@ -1,6 +1,6 @@
-import { LogOut, RefreshCcw, Server } from 'lucide-react'
+import { KeyRound, LogOut, RefreshCcw, Server } from 'lucide-react'
 
-function Header({ backendOnline, loading, onRefresh, onLogout, user }) {
+function Header({ backendOnline, loading, onRefresh, onLogout, onChangePassword, user }) {
   return (
     <header className="app-header">
       <div className="title-block">
@@ -23,6 +23,10 @@ function Header({ backendOnline, loading, onRefresh, onLogout, user }) {
         <button type="button" className="refresh-button" onClick={onRefresh} disabled={loading}>
           <RefreshCcw size={18} aria-hidden="true" />
           {loading ? 'Actualizando' : 'Refrescar'}
+        </button>
+        <button type="button" className="secondary-button" onClick={onChangePassword}>
+          <KeyRound size={18} aria-hidden="true" />
+          Cambiar clave
         </button>
         <button type="button" className="logout-button" onClick={onLogout}>
           <LogOut size={18} aria-hidden="true" />

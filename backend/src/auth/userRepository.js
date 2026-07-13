@@ -62,6 +62,37 @@ async function createUser({ name, username, passwordHash, role = 'ADMIN', active
   };
 }
 
+async function updateUserCredentials({ id, name, passwordHash, role = 'ADMIN', active = 1 }) {
+  const db = getDb();
+
+  await db.run(
+    `
+      UPDATE users
+      SET name = ?,
+          password_hash = ?,
+          role = ?,
+          active = ?,
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `,
+    [name, passwordHash, role, active, id]
+  );
+}
+
+async function updateUserPassword({ id, passwordHash }) {
+  const db = getDb();
+
+  await db.run(
+    `
+      UPDATE users
+      SET password_hash = ?,
+          updated_at = CURRENT_TIMESTAMP
+      WHERE id = ?
+    `,
+    [passwordHash, id]
+  );
+}
+
 async function updateUserLogin(userId) {
   const db = getDb();
 
@@ -153,6 +184,8 @@ module.exports = {
   findUserByUsername,
   findUserById,
   createUser,
+  updateUserCredentials,
+  updateUserPassword,
   updateUserLogin,
   updateAdminDefaults,
   createAuditLog,

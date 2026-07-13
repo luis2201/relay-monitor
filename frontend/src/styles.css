@@ -164,6 +164,36 @@ select {
   cursor: pointer;
 }
 
+.secondary-button,
+.primary-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 40px;
+  padding: 0 14px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.secondary-button {
+  border: 1px solid var(--border);
+  background: var(--surface);
+  color: var(--text);
+}
+
+.primary-button {
+  border: 0;
+  background: var(--blue);
+  color: #ffffff;
+}
+
+.primary-button:disabled {
+  cursor: progress;
+  opacity: 0.72;
+}
+
 .user-chip {
   display: inline-flex;
   align-items: center;
@@ -587,6 +617,115 @@ tbody tr:last-child td {
   opacity: 0.72;
 }
 
+.modal-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: 40;
+  display: grid;
+  place-items: center;
+  padding: 20px;
+  background: rgba(15, 23, 42, 0.42);
+}
+
+.modal-panel {
+  width: min(100%, 460px);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  box-shadow: 0 24px 70px rgba(15, 23, 42, 0.28);
+}
+
+.modal-heading {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 20px;
+  border-bottom: 1px solid var(--border);
+}
+
+.modal-heading h2 {
+  margin: 0 0 4px;
+  font-size: 20px;
+  letter-spacing: 0;
+}
+
+.modal-heading p {
+  margin: 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.icon-button {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  cursor: pointer;
+}
+
+.password-form {
+  display: grid;
+  gap: 14px;
+  padding: 20px;
+}
+
+.password-form label {
+  display: grid;
+  gap: 7px;
+  color: var(--muted);
+  font-size: 14px;
+  font-weight: 800;
+}
+
+.password-form input {
+  width: 100%;
+  height: 42px;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  background: var(--surface);
+  color: var(--text);
+  padding: 0 12px;
+  outline: 0;
+}
+
+.password-form input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.form-error,
+.form-success {
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-weight: 800;
+  font-size: 14px;
+}
+
+.form-error {
+  border: 1px solid #fecaca;
+  background: #fff1f2;
+  color: var(--red);
+}
+
+.form-success {
+  border: 1px solid #bbf7d0;
+  background: #f0fdf4;
+  color: var(--green);
+}
+
+.modal-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 10px;
+  flex-wrap: wrap;
+  margin-top: 4px;
+}
+
 @media (max-width: 900px) {
   .dashboard {
     width: min(100% - 24px, 1180px);
@@ -633,6 +772,7 @@ tbody tr:last-child td {
   .refresh-button,
   .backend-status,
   .logout-button,
+  .secondary-button,
   .user-chip {
     width: 100%;
   }
@@ -640,7 +780,13 @@ tbody tr:last-child td {
   .backend-status,
   .refresh-button,
   .logout-button,
+  .secondary-button,
   .user-chip {
     justify-content: center;
+  }
+
+  .modal-actions .secondary-button,
+  .modal-actions .primary-button {
+    width: 100%;
   }
 }
