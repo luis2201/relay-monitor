@@ -4,7 +4,7 @@ import { getHealth, getRecentEvents, getStatsToday } from '../api/relayMonitorAp
 import Header from '../components/Header'
 import StatCard from '../components/StatCard'
 import EventsTable from '../components/EventsTable'
-import { useAuth } from '../contexts/useAuth'
+import { useAuth } from '../context/useAuth'
 
 const EMPTY_STATS = {
   sent: 0,

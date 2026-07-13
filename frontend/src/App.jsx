@@ -1,28 +1,15 @@
 import Dashboard from './pages/Dashboard'
-import Login from './pages/Login'
-import { AuthProvider } from './contexts/AuthContext'
-import { useAuth } from './contexts/useAuth'
+import ProtectedRoute from './components/ProtectedRoute'
+import { AuthProvider } from './context/AuthContext'
 
 function App() {
   return (
     <AuthProvider>
-      <AuthenticatedApp />
+      <ProtectedRoute>
+        <Dashboard />
+      </ProtectedRoute>
     </AuthProvider>
   )
-}
-
-function AuthenticatedApp() {
-  const { checkingSession, isAuthenticated } = useAuth()
-
-  if (checkingSession) {
-    return (
-      <main className="session-loading">
-        Validando sesion...
-      </main>
-    )
-  }
-
-  return isAuthenticated ? <Dashboard /> : <Login />
 }
 
 export default App

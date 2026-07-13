@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Lock, LogIn, Server } from 'lucide-react'
-import { useAuth } from '../contexts/useAuth'
+import { useAuth } from '../context/useAuth'
 
 function Login() {
   const { login } = useAuth()
@@ -18,7 +18,15 @@ function Login() {
       await login(username.trim(), password)
     } catch (requestError) {
       console.error(requestError)
-      setError('Usuario o contrasena incorrectos.')
+      const status = requestError.response?.status
+
+      if (status === 403) {
+        setError('Usuario inactivo.')
+      } else if (status === 401) {
+        setError('Credenciales incorrectas.')
+      } else {
+        setError('Backend no disponible.')
+      }
     } finally {
       setLoading(false)
     }

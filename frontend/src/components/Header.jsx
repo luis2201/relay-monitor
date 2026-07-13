@@ -14,7 +14,7 @@ function Header({ backendOnline, loading, onRefresh, onLogout, user }) {
 
       <div className="header-actions">
         <div className="user-chip">
-          {user?.username || 'Usuario'}
+          {user?.name || user?.username || 'Usuario'}
         </div>
         <div className={`backend-status ${backendOnline ? 'online' : 'offline'}`}>
           <span aria-hidden="true" />

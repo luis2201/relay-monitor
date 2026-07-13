@@ -1,10 +1,6 @@
 import { useCallback, useEffect, useMemo, useState } from 'react'
-import {
-  getMe,
-  login as loginRequest,
-  setAuthToken,
-  setUnauthorizedHandler,
-} from '../api/relayMonitorApi'
+import { getMe, login as loginRequest, logout as logoutRequest } from '../api/authApi'
+import { setAuthToken, setUnauthorizedHandler } from '../api/relayMonitorApi'
 import { AuthContext } from './authContext'
 
 const TOKEN_STORAGE_KEY = 'relay-monitor-token'
@@ -14,17 +10,29 @@ export function AuthProvider({ children }) {
   const [user, setUser] = useState(null)
   const [checkingSession, setCheckingSession] = useState(Boolean(token))
 
-  const logout = useCallback(() => {
+  const clearSession = useCallback(() => {
     window.localStorage.removeItem(TOKEN_STORAGE_KEY)
     setAuthToken(null)
     setToken(null)
     setUser(null)
   }, [])
 
+  const logout = useCallback(async () => {
+    try {
+      if (window.localStorage.getItem(TOKEN_STORAGE_KEY)) {
+        await logoutRequest()
+      }
+    } catch (error) {
+      console.error(error)
+    } finally {
+      clearSession()
+    }
+  }, [clearSession])
+
   useEffect(() => {
-    setUnauthorizedHandler(logout)
+    setUnauthorizedHandler(clearSession)
     return () => setUnauthorizedHandler(null)
-  }, [logout])
+  }, [clearSession])
 
   useEffect(() => {
     if (!token) {
@@ -40,12 +48,12 @@ export function AuthProvider({ children }) {
         setUser(response.user)
       })
       .catch(() => {
-        logout()
+        clearSession()
       })
       .finally(() => {
         setCheckingSession(false)
       })
-  }, [logout, token])
+  }, [clearSession, token])
 
   const login = useCallback(async (username, password) => {
     const response = await loginRequest(username, password)

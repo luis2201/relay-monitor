@@ -2,7 +2,7 @@ import axios from 'axios'
 
 const API_URL = import.meta.env.VITE_API_URL || ''
 
-const api = axios.create({
+export const api = axios.create({
   baseURL: API_URL,
   timeout: 8000,
 })
@@ -35,16 +35,6 @@ export function setUnauthorizedHandler(handler) {
 
 export async function getHealth() {
   const response = await api.get('/health')
-  return response.data
-}
-
-export async function login(username, password) {
-  const response = await api.post('/api/auth/login', { username, password })
-  return response.data
-}
-
-export async function getMe() {
-  const response = await api.get('/api/auth/me')
   return response.data
 }
 

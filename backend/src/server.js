@@ -6,8 +6,9 @@ const http = require('http');
 const { Server } = require('socket.io');
 const { initDb } = require('./db');
 const { LogWatcher } = require('./logWatcher');
-const authService = require('./authService');
-const { verifyToken } = require('./authMiddleware');
+const authRoutes = require('./auth/authRoutes');
+const authService = require('./auth/authService');
+const { verifyToken } = require('./auth/authMiddleware');
 const eventRepository = require('./eventRepository');
 const statsService = require('./statsService');
 
@@ -35,31 +36,7 @@ app.get('/health', (req, res) => {
   });
 });
 
-app.post('/api/auth/login', async (req, res, next) => {
-  try {
-    const { username, password } = req.body;
-
-    if (!username || !password) {
-      res.status(400).json({ error: 'missing_credentials' });
-      return;
-    }
-
-    const session = await authService.login(username, password);
-
-    if (!session) {
-      res.status(401).json({ error: 'invalid_credentials' });
-      return;
-    }
-
-    res.json(session);
-  } catch (error) {
-    next(error);
-  }
-});
-
-app.get('/api/auth/me', verifyToken, (req, res) => {
-  res.json({ user: req.user });
-});
+app.use('/api/auth', authRoutes);
 
 app.get('/api/events/recent', verifyToken, async (req, res, next) => {
   try {
@@ -116,8 +93,8 @@ async function start() {
 
   await logWatcher.start();
 
-server.listen(PORT, HOST, () => {
-  console.log('Relay Monitor backend corriendo en ' + HOST + ':' + PORT);
+  server.listen(PORT, HOST, () => {
+    console.log('Relay Monitor backend corriendo en ' + HOST + ':' + PORT);
     console.log(`LOG_SOURCE=${LOG_SOURCE}`);
   });
 }
