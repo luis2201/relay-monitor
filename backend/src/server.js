@@ -3,6 +3,7 @@ require('dotenv').config();
 const express = require('express');
 const cors = require('cors');
 const http = require('http');
+const path = require('path');
 const { Server } = require('socket.io');
 const { initDb } = require('./db');
 const { LogWatcher } = require('./logWatcher');
@@ -67,6 +68,20 @@ io.on('connection', (socket) => {
   socket.on('disconnect', () => {
     console.log(`Cliente desconectado: ${socket.id}`);
   });
+});
+
+
+// Servir frontend React en producción
+const frontendPath = path.join(__dirname, '../../frontend/dist');
+
+app.use(express.static(frontendPath));
+
+app.get('*', (req, res, next) => {
+  if (req.path.startsWith('/api') || req.path.startsWith('/socket.io')) {
+    return next();
+  }
+
+  return res.sendFile(path.join(frontendPath, 'index.html'));
 });
 
 app.use((error, req, res, next) => {
