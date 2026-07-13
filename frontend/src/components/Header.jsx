@@ -1,15 +1,15 @@
-import { KeyRound, LogOut, RefreshCcw, Server } from 'lucide-react'
+import { KeyRound, LogOut, RefreshCcw } from 'lucide-react'
 
 function Header({ backendOnline, loading, onRefresh, onLogout, onChangePassword, user }) {
   return (
     <header className="app-header">
       <div className="title-block">
+        <img className="header-logo" src="/img/logo_sucre.png" alt="GADM Sucre" />
         <div className="app-kicker">
-          <Server size={18} aria-hidden="true" />
-          Relay SMTP
+          GADM SUCRE · Relay SMTP
         </div>
         <h1>Relay Monitor</h1>
-        <p>Monitoreo del relay SMTP Postfix</p>
+        <p>Monitoreo institucional del relay SMTP Postfix</p>
       </div>
 
       <div className="header-actions">

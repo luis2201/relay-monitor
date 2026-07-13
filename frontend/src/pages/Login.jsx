@@ -1,5 +1,5 @@
 import { useState } from 'react'
-import { Lock, LogIn, Server } from 'lucide-react'
+import { Lock, LogIn } from 'lucide-react'
 import { useAuth } from '../context/useAuth'
 
 function Login() {
@@ -36,12 +36,11 @@ function Login() {
     <main className="login-page">
       <section className="login-panel">
         <div className="login-brand">
-          <div className="login-icon" aria-hidden="true">
-            <Server size={26} />
-          </div>
+          <img className="login-logo" src="/img/logo_sucre.png" alt="GADM Sucre" />
           <div>
+            <span>GADM SUCRE</span>
             <h1>Relay Monitor</h1>
-            <p>Acceso al monitoreo del relay SMTP Postfix</p>
+            <p>Acceso institucional al monitoreo del relay SMTP Postfix</p>
           </div>
         </div>
 
